@@ -38,7 +38,7 @@ docker run -p 11112:11112 \
   -e AWS_ACCESS_KEY_ID=<your-access-key-id> \
   -e AWS_SECRET_ACCESS_KEY=<your-secret-access-key> \
   -e AWS_DEFAULT_REGION=<your-region> \
-  public.ecr.aws/mmi/dicom-store-scp:latest
+  <container-url>:<container-tag>
 ```
 
 ### 2. Use in ECS/Fargate Task Definition
@@ -79,8 +79,8 @@ This helps ECS or Docker orchestrators detect when the service becomes unhealthy
 ## 🛡️ Security
 
 - Runs as non-root user (`dicomuser`)
-- Uses `python:3.12-slim` for minimal attack surface
-- Health check for stability
+- Built on python:3.12-alpine, a lightweight and security-hardened base image with minimal surface area
+- Includes a health check to ensure SCP port availability and container stability
 
 ---
 
