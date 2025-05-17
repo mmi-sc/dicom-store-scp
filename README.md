@@ -9,6 +9,79 @@ It supports deployment in local environments (`docker run`) or as part of an AWS
 
 ---
 
+## 🚀 Usage
+
+### Run Locally with Docker
+
+#### 1. **Prepare an Amazon S3 bucket to store DICOM files, and note the bucket name.**
+
+For instructions, refer to:  
+[Creating a general purpose bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html)
+
+Example: Set the bucket name as an environment variable:
+
+```bash
+DICOM_BUCKET="your-dicom-bucket-name"
+```
+
+#### 2. **Create AWS credentials that allow the container to upload files to S3.**
+
+You will need an **Access Key ID** and **Secret Access Key** for an IAM user with `s3:PutObject` and `s3:ListBucket` permissions.  
+For help:  
+[Create an access key for an IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-keys-admin-managed.html#admin-create-access-key)
+
+If you have already configured a default profile using `aws configure`, you can load the credentials like this:
+
+```bash
+AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
+AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
+```
+
+#### 3. **Run the container using the following command.**
+
+Make sure you have set the `$CONTAINER_IMAGES` variable and pulled the container image accordingly.
+
+```bash
+CONTAINER_IMAGES="709825985650.dkr.ecr.us-east-1.amazonaws.com/man-machine-interface/dicom-store-scp:v1.1.1"
+```
+
+```bash
+docker run -p 11112:11112 \
+  -e DICOM_BUCKET=$DICOM_BUCKET \
+  -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+  -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+  $CONTAINER_IMAGES
+```
+
+#### 4. **Use your preferred DICOM Store SCU to send STORE requests to the SCP.**
+
+The following example uses [DCMTK](https://dicom.offis.de/en/dcmtk/dcmtk-tools/) to send all DICOM files in the current directory to the server:
+
+```bash
+storescu localhost 11112 *.dcm
+```
+
+### Use in ECS/Fargate Task Definition
+
+```json
+{
+  "containerDefinitions": [
+    {
+      "name": "dicom-scp",
+      "image": "709825985650.dkr.ecr.us-east-1.amazonaws.com/man-machine-interface/dicom-store-scp:v1.1.1",
+      "portMappings": [
+        { "containerPort": 11112 }
+      ],
+      "environment": [
+        { "name": "DICOM_BUCKET", "value": "your-dicom-bucket-name" }
+      ]
+    }
+  ]
+}
+```
+
+---
+
 ## ⚙️ Environment Variables
 
 | Variable                   | Required | Description                                                                  | Default    |
@@ -25,42 +98,6 @@ It supports deployment in local environments (`docker run`) or as part of an AWS
 | `NETWORK_TIMEOUT`          | ⭕ No    | Timeout for network connection                                               | `90`       |
 | `SUPPORTED_SOP_CLASS_UIDS` | ⭕ No    | Comma-separated list of supported SOP Class UIDs                             | empty      |
 | `LOG_LEVEL`                | ⭕ No    | Logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`)              | `INFO`     |
-
----
-
-## 🚀 Usage Examples
-
-### 1. Run Locally with Docker
-
-```bash
-docker run -p 11112:11112 \
-  -e DICOM_BUCKET=<your-dicom-bucket-name> \
-  -e AWS_ACCESS_KEY_ID=<your-access-key-id> \
-  -e AWS_SECRET_ACCESS_KEY=<your-secret-access-key> \
-  -e AWS_DEFAULT_REGION=<your-region> \
-  <container-url>:<container-tag>
-```
-
-### 2. Use in ECS/Fargate Task Definition
-
-```json
-{
-  "containerDefinitions": [
-    {
-      "name": "dicom-scp",
-      "image": "public.ecr.aws/mmi/dicom-store-scp:latest",
-      "portMappings": [
-        { "containerPort": 11112 }
-      ],
-      "environment": [
-        { "name": "DICOM_BUCKET", "value": "your-dicom-bucket-name" },
-        { "name": "AE_TITLE", "value": "YOUR-AE-TITLE" },
-        { "name": "LOG_LEVEL", "value": "DEBUG" }
-      ]
-    }
-  ]
-}
-```
 
 ---
 
@@ -81,12 +118,6 @@ This helps ECS or Docker orchestrators detect when the service becomes unhealthy
 - Runs as non-root user (`dicomuser`)
 - Built on python:3.12-alpine, a lightweight and security-hardened base image with minimal surface area
 - Includes a health check to ensure SCP port availability and container stability
-
----
-
-## 📄 License
-
-MIT or custom EULA as applicable.
 
 ---
 
