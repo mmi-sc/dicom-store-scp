@@ -130,13 +130,12 @@ To enable S3 access, you must configure valid credentials via one of the followi
 1. **AWS ECS Task Role (Recommended)**
    - Attach an IAM role with `s3:PutObject` and `s3:ListBucket` permissions to your ECS task.
 
-2. **Environment variables (for local testing only)**
+2. **Environment variables (for local running only)**
    - If running locally with `docker run`, pass credentials explicitly:
 
    ```bash
    -e AWS_ACCESS_KEY_ID=<your-access-key-id> \
-   -e AWS_SECRET_ACCESS_KEY=<your-secret-access-key> \
-   -e AWS_DEFAULT_REGION=<your-region>
+   -e AWS_SECRET_ACCESS_KEY=<your-secret-access-key>
    ```
 
 > ⚠️ NOTE: AWS CLI configuration via `aws configure` or `~/.aws/credentials` is not visible inside the container unless you explicitly mount that directory, which is not recommended for security reasons.
