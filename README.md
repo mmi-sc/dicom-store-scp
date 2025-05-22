@@ -58,7 +58,7 @@ This IAM role enables ECS tasks to write to your bucket.
 Add an inline policy:
 
 1. Select your new role, click **Add permissions** > **Create inline policy**.
-2. Select the **JSON** tab, paste the policy below:
+2. Select the **JSON** tab, remove any existing content, and replace it with the policy below:
 
 ```json
 {
