@@ -113,6 +113,28 @@ You can verify the container is listening on port `11112` and ready to accept DI
 
 ---
 
+## 📁 DICOM File Storage Structure
+
+DICOM files are stored in the following hierarchical format:
+- If `DICOM_BUCKET` is set, files are saved under that S3 bucket.
+- If `DICOM_BUCKET` is not set, files are saved locally under `/app/storage` within the container.
+
+The storage path format is:
+
+```
+YYYY/MM/DD/Timestamp/StudyInstanceUID/SeriesInstanceUID/SOPInstanceUID.dcm
+```
+
+- `StudyDate` is used if available; otherwise, the current date is used.
+- `Timestamp` represents the current UNIX time.
+
+**Example:**
+
+```
+2025/05/23/1747994435/1.2.826.0.1.3680043.8.498.73149934529919832686416396616359448504/1.2.826.0.1.3680043.8.498.46359947900531364351870995163206461797/1.2.826.0.1.3680043.8.498.7397960457184174305501312076486949118.dcm
+```
+
+
 ## 📡 Verifying SCP Connectivity (Example Store SCU Operation)
 
 After successful deployment:
