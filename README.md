@@ -31,9 +31,10 @@ By default, DICOM files are stored in `/app/storage`.
 
 ## ☁️ Deploy on AWS ECS (Fargate)
 
-### Step 1: Create an Amazon S3 Bucket
+>The examples in this guide use specific names for clarity, but you may use any names you prefer.
+Please note that S3 is a global service, so bucket names must be globally unique. Be sure to choose a name that is not already in use.
 
-Follow these steps to create your bucket named **`my-dicom-storage-bucket`**:
+### Step 1: Create an Amazon S3 Bucket
 
 1. Open the [Amazon S3 Console](https://console.aws.amazon.com/s3/).
 2. Select your desired AWS region from the top-right region menu first.
