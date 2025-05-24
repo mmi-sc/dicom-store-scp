@@ -95,17 +95,19 @@ Add an inline policy:
 ### Step 4: Launch ECS Service
 
 1. Navigate to the **Clusters** page in the [ECS console](https://console.aws.amazon.com/ecs/) and click **Create cluster**.
-2. Enter a name for your cluster (e.g., `dicom-scp-cluster`) and click **Create**.
+2. Enter `dicom-scp-cluster` as the name of the cluster and click **Create**.
 3. After the cluster has been created, open it.
 4. On the **Services** tab, click **Create**.
 5. In the **Service details** section:
-   - **Task Definition family**: Select the one you created earlier (e.g., `dicom-scp-task`).
-   - **Service name**: Enter a suitable name (e.g., `dicom-scp-service`).
+   - **Task Definition family**: Select `dicom-scp-task`
+     >Note: If a task definition with the same name was previously deleted, the revision number may not start at `1`.  
+     You can enter the latest revision number explicitly, or leave the field blank to use the most recent revision automatically.
+   - **Service name**: `dicom-scp-service`
 6. In the **Networking** section:
-   - **VPC**: Select your default VPC.
-   - **Subnets**: Select at least one public subnet.
-   - **Security groups**: Create or select a security group allowing inbound TCP port `11112` from `0.0.0.0/0`.
-   - **Auto-assign public IP**: Set to **ENABLED**.
+   - **VPC**: Choose the default VPC, any VPC that includes public subnets, or create a new one.
+   - **Subnets**: Choose at least one public subnet.
+   - **Security groups**: Create or choose a security group allowing inbound TCP port `11112` from `0.0.0.0/0`.
+   - **Public IP**: Confirm that it is set to **Turned on**.
 7. Click **Create**.
 
 After a few minutes, your task should display a **RUNNING** status.  
