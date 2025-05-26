@@ -31,6 +31,8 @@ By default, DICOM files are stored in `/app/storage`.
 
 ## ☁️ Deploy on AWS ECS (Fargate)
 
+>If you do not have the necessary permissions to perform the following operations, please contact your AWS administrator.
+
 >The examples in this guide use specific names for clarity, but you may use any names you prefer.
 Please note that S3 is a global service, so bucket names must be globally unique. Be sure to choose a name that is not already in use.
 
